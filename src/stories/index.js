@@ -15,7 +15,7 @@ storiesOf('ShelfChanger', module)
   ))
   .add('with selected shelf', () => (
     <ShelfChanger
-      currentShelfIndex={1}
+      currentShelf="two"
       shelves={[{ tag: 'one', value: 'one' }, { tag: 'two', value: 'two' }]}
     />
   ));

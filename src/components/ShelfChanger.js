@@ -16,7 +16,7 @@ class ShelfChanger extends Component {
   static defaultProps = {
     shelves: [],
     onMoveTo: () => {},
-    currentShelfIndex: -1,
+    currentShelf: 'no-shelf',
   };
 
   static propTypes = {
@@ -25,33 +25,31 @@ class ShelfChanger extends Component {
       value: PropTypes.string.isRequired,
     })),
     onMoveTo: PropTypes.func,
-    currentShelfIndex: PropTypes.number,
+    currentShelf: PropTypes.string,
   };
 
   state = {
-    currentShelfIndex: this.props.currentShelfIndex || -1,
+    currentShelf: this.props.currentShelf,
   };
 
   moveTo = (e) => {
     const { shelves, onMoveTo } = this.props;
     const selectedIndex = e.target.selectedIndex - 1; // NOTE: adjusting for "Move to..." option
-    const destinationShelf = shelves[selectedIndex];
+    const currentShelf = shelves[selectedIndex].value;
 
-    onMoveTo(destinationShelf);
+    onMoveTo(currentShelf);
 
-    this.setState(prev => ({ ...prev, currentShelfIndex: selectedIndex }));
+    this.setState(prev => ({ ...prev, currentShelf }));
   };
 
   render() {
     const { shelves } = this.props;
-    const { currentShelfIndex } = this.state;
+    const { currentShelf } = this.state;
     const options = shelves.map(ShelfChangerItem);
-    const selectedShelf = shelves[currentShelfIndex];
-    const selectedValue = (selectedShelf && selectedShelf.value) || 'no-shelf';
 
     return (
       <div className="book-shelf-changer">
-        <select value={selectedValue} onChange={this.moveTo}>
+        <select value={currentShelf} onChange={this.moveTo}>
           <option disabled value="no-shelf">
             Move to...
           </option>
