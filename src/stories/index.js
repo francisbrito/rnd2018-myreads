@@ -5,7 +5,7 @@ import { storiesOf } from '@storybook/react';
 import '../App.css';
 import '../index.css';
 
-import { Title, ShelfChanger, Book } from '../components';
+import { Title, ShelfChanger, Book, Shelf } from '../components';
 import { BOOKS, SHELVES } from './mock-data';
 
 storiesOf('Title', module).add('with children', () => <Title>My Reads</Title>);
@@ -37,5 +37,30 @@ storiesOf('Book', module)
       {...aBookData}
       coverImageUrl={aBookData.imageLinks.thumbnail}
       renderShelfChanger={() => <ShelfChanger shelves={SHELVES} currentShelf={aBookData.shelf} />}
+    />
+  ));
+
+storiesOf('Shelf', module)
+  .add('without books', () => <Shelf tag="Currently reading" value="currentlyReading" />)
+  .add('with books', () => (
+    <Shelf
+      books={BOOKS.filter(b => b.shelf === 'wantToRead')}
+      tag="Want to read"
+      value="wantToRead"
+    />
+  ))
+  .add('with books that have shelf changer', () => (
+    <Shelf
+      books={BOOKS.filter(b => b.shelf === 'wantToRead')}
+      tag="Want to read"
+      value="wantToRead"
+      renderBook={b => (
+        <Book
+          key={b.title}
+          coverImageUrl={b.imageLinks.thumbnail}
+          renderShelfChanger={() => <ShelfChanger shelves={SHELVES} currentShelf={b.shelf} />}
+          {...b}
+        />
+      )}
     />
   ));

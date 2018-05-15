@@ -43,6 +43,11 @@ body, .app {
   text-align: center;
 }
 
+.bookshelf.bookshelf-empty {
+  font-weight: 400;
+  color: #d0d0d0;
+}
+
 .open-search {
   position: fixed;
   right: 25px;
