@@ -47,11 +47,12 @@ class ShelfChanger extends Component {
     const { currentShelfIndex } = this.state;
     const options = shelves.map(ShelfChangerItem);
     const selectedShelf = shelves[currentShelfIndex];
+    const selectedValue = (selectedShelf && selectedShelf.value) || 'no-shelf';
 
     return (
       <div className="book-shelf-changer">
-        <select value={selectedShelf && selectedShelf.value} onChange={this.moveTo}>
-          <option disabled selected value="no-shelf">
+        <select value={selectedValue} onChange={this.moveTo}>
+          <option disabled value="no-shelf">
             Move to...
           </option>
           {options}
