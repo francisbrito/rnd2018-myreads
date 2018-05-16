@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-
-import * as BooksApi from '../BooksApi';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import { Title, Shelf, Book, ShelfChanger } from '.';
+import { ShelfType } from '../types';
 
 const buildShelvesFromBooks = (books) => {
   const shelves = [
@@ -18,57 +19,50 @@ const buildShelvesFromBooks = (books) => {
   return shelvesWithBooks;
 };
 
-class MainView extends Component {
-  state = {
-    books: [],
-  };
+function MainView({ books, onBookMoved }) {
+  const shelvesToBeRendered = buildShelvesFromBooks(books);
+  const availableShelves = shelvesToBeRendered.concat([{ tag: 'None', value: 'none' }]);
 
-  componentWillMount = () => {
-    BooksApi.getAll().then(books => this.setState(() => ({ books })));
-  };
-
-  onMovedShelf = ({ book, newShelf }) => {
-    const { books } = this.state;
-    const bookIdx = books.findIndex(b => b.title === book.title);
-
-    // DANGEROUS?
-    books[bookIdx] = Object.assign({ ...book }, { shelf: newShelf });
-
-    this.setState(() => ({ books }));
-  };
-
-  render() {
-    const { books } = this.state;
-    const shelves = buildShelvesFromBooks(books);
-
-    return (
-      <div className="MainView">
-        <Title>MyReads</Title>
-        <div className="list-books-content">
-          {shelves.map(s => (
-            <Shelf
-              key={s.value}
-              {...s}
-              renderBook={b => (
-                <Book
-                  key={`${s.value}-${b.title}`}
-                  coverImageUrl={b.imageLinks.thumbnail}
-                  renderShelfChanger={() => (
-                    <ShelfChanger
-                      shelves={shelves}
-                      currentShelf={b.shelf}
-                      onMoveTo={newShelf => this.onMovedShelf({ book: b, newShelf })}
-                    />
-                  )}
-                  {...b}
-                />
-              )}
-            />
-          ))}
-        </div>
+  return (
+    <div className="MainView">
+      <Title>MyReads</Title>
+      <div className="list-books-content">
+        {shelvesToBeRendered.map(s => (
+          <Shelf
+            key={s.value}
+            {...s}
+            renderBook={b => (
+              <Book
+                key={`${s.value}-${b.title}`}
+                coverImageUrl={b.imageLinks.thumbnail}
+                renderShelfChanger={() => (
+                  <ShelfChanger
+                    shelves={availableShelves}
+                    currentShelf={b.shelf}
+                    onMoveTo={newShelf => onBookMoved({ book: b, newShelf })}
+                  />
+                )}
+                {...b}
+              />
+            )}
+          />
+        ))}
       </div>
-    );
-  }
+      <div className="open-search">
+        <Link href="/search" to="/search" />
+      </div>
+    </div>
+  );
 }
+
+MainView.propTypes = {
+  books: PropTypes.arrayOf(ShelfType),
+  onBookMoved: PropTypes.func,
+};
+
+MainView.defaultProps = {
+  books: [],
+  onBookMoved: () => {},
+};
 
 export default MainView;
