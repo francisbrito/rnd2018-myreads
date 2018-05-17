@@ -38,11 +38,11 @@ class App extends Component {
         <div className="app">
           <Route
             exact
-            path="/"
+            path={`${process.env.PUBLIC_URL}/`}
             render={() => <MainView books={books} onBookMoved={this.onBookMoved} />}
           />
           <Route
-            path="/search"
+            path={`${process.env.PUBLIC_URL}/search`}
             render={() => <SearchView shelvedBooks={books} onBookMoved={this.onBookMoved} />}
           />
         </div>

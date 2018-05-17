@@ -49,7 +49,7 @@ function MainView({ books, onBookMoved }) {
         ))}
       </div>
       <div className="open-search">
-        <Link href="/search" to="/search" />
+        <Link href={`${process.env.PUBLIC_URL}/search`} to={`${process.env.PUBLIC_URL}/search`} />
       </div>
     </div>
   );
