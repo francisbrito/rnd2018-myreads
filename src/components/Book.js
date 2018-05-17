@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { intersperse } from 'ramda';
 
 class Book extends Component {
   static propTypes = {
@@ -20,7 +21,8 @@ class Book extends Component {
     const {
       title, coverImageUrl, authors, renderShelfChanger,
     } = this.props;
-    const authorsText = authors.join(<br />);
+    // NOTE: similar to `Array#join` but returns an array instead.
+    const authorsText = intersperse(<br />, authors);
 
     return (
       <div className="book">
