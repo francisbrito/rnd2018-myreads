@@ -6,3 +6,4 @@ export { default as BookList } from './BookList';
 export { default as Shelf } from './Shelf';
 export { default as MainView } from './MainView';
 export { default as SearchView } from './SearchView';
+export { default as LoadingBar } from './LoadingBar';

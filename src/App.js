@@ -3,7 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 
 import './App.css';
 
-import { MainView, SearchView } from './components';
+import { MainView, SearchView, LoadingBar } from './components';
 
 import * as BooksApi from './BooksApi';
 
@@ -36,6 +36,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="app">
+          <LoadingBar />
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/`}
