@@ -1,7 +1,7 @@
 import React from 'react';
 import { intersperse, map } from 'ramda';
 import PropTypes from 'prop-types';
-import uniqueString from 'unique-string';
+import cuid from 'cuid';
 
 const BookCover = ({ thumbnail }) => {
   const bookCoverStyle = {
@@ -47,7 +47,7 @@ const Book = ({
       <p className="book-title">{title}</p>
       <p className="book-authors">
         {/* NOTE: sets unique keys to `br` elements */}
-        {map(e => (e.call ? e(uniqueString()) : e), intersperse(key => <br key={key} />, authors))}
+        {map(e => (e.call ? e(cuid()) : e), intersperse(key => <br key={key} />, authors))}
       </p>
     </div>
   );
