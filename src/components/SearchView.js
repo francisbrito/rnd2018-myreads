@@ -3,26 +3,12 @@ import { Link } from 'react-router-dom';
 import debounce from 'debounce';
 import PropTypes from 'prop-types';
 
-import { BookList, Book, ShelfChanger } from '.';
+import { BookList, Book, ShelfChanger, Shelf } from '.';
 import * as BooksApi from '../BooksApi';
-import { BookType, ShelfType } from '../types';
-
-const consolidateWith = xs => (x) => {
-  const itemIdx = xs.findIndex(xx => x.id === xx.id);
-
-  if (itemIdx !== -1) {
-    const result = { ...x, ...xs[itemIdx] };
-
-    return result;
-  }
-
-  return x;
-};
 
 class SearchView extends Component {
   static propTypes = {
-    shelvedBooks: PropTypes.arrayOf(BookType),
-    shelves: PropTypes.arrayOf(ShelfType),
+    shelves: PropTypes.arrayOf(PropTypes.shape(Shelf.propTypes)),
     onBookMoved: PropTypes.func,
   };
 
@@ -33,7 +19,6 @@ class SearchView extends Component {
       { tag: 'Read', value: 'read' },
       { tag: 'None', value: 'none' },
     ],
-    shelvedBooks: [],
     onBookMoved: () => {},
   };
 
@@ -56,8 +41,7 @@ class SearchView extends Component {
 
   render() {
     const { books } = this.state;
-    const { shelves, onBookMoved, shelvedBooks } = this.props;
-    const consolidatedBooks = books.map(consolidateWith(shelvedBooks));
+    const { shelves, onBookMoved } = this.props;
 
     return (
       <div className="search-books">
@@ -79,11 +63,10 @@ class SearchView extends Component {
         </div>
         <div className="search-book-results">
           <BookList
-            books={consolidatedBooks}
+            books={books}
             renderBook={b => (
               <Book
                 key={b.id}
-                coverImageUrl={b.imageLinks.thumbnail}
                 renderShelfChanger={() => (
                   <ShelfChanger
                     shelves={shelves}
