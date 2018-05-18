@@ -22,7 +22,7 @@ $ npm start
 
 If using `yarn`:
 ```sh
-$ yarn install
+$ yarn start
 ```
 
 ## Examples
