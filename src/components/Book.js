@@ -1,43 +1,68 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import { intersperse } from 'ramda';
+import PropTypes from 'prop-types';
 
-class Book extends Component {
-  static propTypes = {
-    renderShelfChanger: PropTypes.func,
-    title: PropTypes.string.isRequired,
-    coverImageUrl: PropTypes.string.isRequired,
-    authors: PropTypes.arrayOf(PropTypes.string),
+const BookCover = ({ thumbnail }) => {
+  const bookCoverStyle = {
+    background: `url("${thumbnail}") center`,
+    backgroundSize: 'cover',
+  };
+  return <div className="book-cover" style={bookCoverStyle} />;
+};
+
+BookCover.propTypes = {
+  thumbnail: PropTypes.string.isRequired,
+};
+
+const BookCoverNotAvailable = () => {
+  const bookCoverNotAvailableStyle = {
+    color: '#666',
+    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: '1rem',
   };
 
-  static defaultProps = {
-    renderShelfChanger: () => null,
-    authors: [],
-  };
+  return (
+    <div className="book-cover" style={bookCoverNotAvailableStyle}>
+      Cover not available
+    </div>
+  );
+};
 
-  onMoveTo = () => {};
-
-  render() {
-    const {
-      title, coverImageUrl, authors, renderShelfChanger,
-    } = this.props;
-    // NOTE: similar to `Array#join` but returns an array instead.
-    const authorsText = intersperse(<br />, authors);
-
-    return (
-      <div className="book">
-        <div className="book-top">
-          <div
-            className="book-cover"
-            style={{ background: `url("${coverImageUrl}") center`, backgroundSize: 'cover' }}
-          />
-          {renderShelfChanger()}
-        </div>
-        <p className="book-title">{title}</p>
-        <p className="book-authors">{authorsText}</p>
+const Book = ({
+  id, title, authors, imageLinks, renderShelfChanger,
+}) => {
+  const thumbnail = imageLinks && imageLinks.thumbnail;
+  const renderBookCover = withThumbnail =>
+    (withThumbnail ? <BookCover thumbnail={withThumbnail} /> : <BookCoverNotAvailable />);
+  return (
+    <div id={id} className="book">
+      <div className="book-top">
+        {renderBookCover(thumbnail)}
+        {renderShelfChanger()}
       </div>
-    );
-  }
-}
+      <p className="book-title">{title}</p>
+      <p className="book-authors">{intersperse(<br />, authors)}</p>
+    </div>
+  );
+};
+
+Book.propTypes = {
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  authors: PropTypes.arrayOf(PropTypes.string),
+  imageLinks: PropTypes.shape({
+    thumbnail: PropTypes.string,
+  }),
+  renderShelfChanger: PropTypes.func,
+};
+
+Book.defaultProps = {
+  authors: [],
+  imageLinks: null,
+  renderShelfChanger: () => null,
+};
 
 export default Book;
