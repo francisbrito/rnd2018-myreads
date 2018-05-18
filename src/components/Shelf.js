@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { BookType } from '../types';
-import { BookList } from '.';
+import { Book, BookList } from '.';
 
 const EmptyShelf = () => <p className="bookshelf bookshelf-empty">Shelf is empty</p>;
 const Shelf = ({ tag, books, renderBook }) => (
@@ -20,14 +19,14 @@ const Shelf = ({ tag, books, renderBook }) => (
 
 Shelf.propTypes = {
   tag: PropTypes.string,
-  books: PropTypes.arrayOf(BookType),
+  books: PropTypes.arrayOf(PropTypes.shape(Book.propTypes)),
   renderBook: PropTypes.func,
 };
 
 Shelf.defaultProps = {
   tag: 'None',
   books: [],
-  renderBook: BookList.defaultRenderBook,
+  renderBook: BookList.defaultProps.renderBook,
 };
 
 export default Shelf;

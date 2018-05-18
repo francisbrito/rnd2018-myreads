@@ -1,6 +1,7 @@
 import React from 'react';
-import { intersperse } from 'ramda';
+import { intersperse, map } from 'ramda';
 import PropTypes from 'prop-types';
+import uniqueString from 'unique-string';
 
 const BookCover = ({ thumbnail }) => {
   const bookCoverStyle = {
@@ -44,7 +45,10 @@ const Book = ({
         {renderShelfChanger()}
       </div>
       <p className="book-title">{title}</p>
-      <p className="book-authors">{intersperse(<br />, authors)}</p>
+      <p className="book-authors">
+        {/* NOTE: sets unique keys to `br` elements */}
+        {map(e => (e.call ? e(uniqueString()) : e), intersperse(key => <br key={key} />, authors))}
+      </p>
     </div>
   );
 };
