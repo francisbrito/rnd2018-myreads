@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+import { values } from 'ramda';
 
 import './App.css';
 
@@ -7,31 +8,38 @@ import { MainView, SearchView, LoadingBar } from './components';
 
 import * as BooksApi from './BooksApi';
 
+const fromListToHash = ({ items, getKey }) =>
+  items.reduce((hash, item) => ({ ...hash, [getKey(item)]: item }), {});
+
 class App extends Component {
   state = {
-    books: [],
+    books: {},
   };
 
-  componentWillMount = () => {
-    BooksApi.getAll().then(books => this.setState(() => ({ books })));
+  componentDidMount = () => {
+    BooksApi.getAll()
+      .then(books => fromListToHash({ items: books, getKey: b => b.id }))
+      .then(books => this.setState({ books }));
   };
 
   onBookMoved = ({ book, newShelf }) => {
-    const { books } = this.state;
-    const bookIdx = books.findIndex(b => b.id === (book && book.id));
+    const originalState = this.state;
 
-    // DANGEROUS MUTATIONS?
-    if (bookIdx === -1) {
-      books.push({ ...book, shelf: newShelf });
-    } else {
-      books[bookIdx] = Object.assign({ ...book }, { shelf: newShelf });
-    }
+    this.updateBookState({ book, newShelf });
 
-    this.setState(() => ({ books }));
+    // NOTE: if update fails, return app to its previous state.
+    BooksApi.update(book, newShelf).catch(() => this.setState(() => originalState));
+  };
+
+  updateBookState = ({ book, newShelf }) => {
+    this.setState(prev => ({
+      ...prev,
+      books: { ...prev.books, [book.id]: { ...book, shelf: newShelf } },
+    }));
   };
 
   render() {
-    const { books } = this.state;
+    const books = values(this.state.books);
 
     return (
       <BrowserRouter>
@@ -44,7 +52,7 @@ class App extends Component {
           />
           <Route
             path={`${process.env.PUBLIC_URL}/search`}
-            render={() => <SearchView shelvedBooks={books} onBookMoved={this.onBookMoved} />}
+            render={() => <SearchView onBookMoved={this.onBookMoved} />}
           />
         </div>
       </BrowserRouter>
