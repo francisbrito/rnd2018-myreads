@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import debounce from 'debounce';
 import PropTypes from 'prop-types';
+import { values } from 'ramda';
 
 import { BookList, Book, ShelfChanger, Shelf } from '.';
 import * as BooksApi from '../BooksApi';
+
+const fromListToHash = ({ items, getKey }) =>
+  items.reduce((hash, item) => ({ ...hash, [getKey(item)]: item }), {});
 
 class SearchView extends Component {
   static propTypes = {
@@ -23,7 +27,7 @@ class SearchView extends Component {
   };
 
   state = {
-    books: [],
+    books: {},
     query: '',
   };
 
@@ -37,12 +41,13 @@ class SearchView extends Component {
     if (this.state.query && this.state.query.length > 0) {
       BooksApi.search(this.state.query)
         .then(response => (Array.isArray(response) ? response : []))
+        .then(books => fromListToHash({ items: books, getKey: b => b.id }))
         .then(books => this.setState(prev => ({ ...prev, books })));
     }
   }, 150);
 
   render() {
-    const { books } = this.state;
+    const books = values(this.state.books);
     const { shelves, onBookMoved } = this.props;
 
     return (
