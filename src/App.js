@@ -52,7 +52,9 @@ class App extends Component {
           />
           <Route
             path={`${process.env.PUBLIC_URL}/search`}
-            render={() => <SearchView onBookMoved={this.onBookMoved} />}
+            render={() => (
+              <SearchView shelvedBooks={this.state.books} onBookMoved={this.onBookMoved} />
+            )}
           />
         </div>
       </BrowserRouter>

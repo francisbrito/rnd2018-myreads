@@ -13,6 +13,7 @@ const fromListToHash = ({ items, getKey }) =>
 class SearchView extends Component {
   static propTypes = {
     shelves: PropTypes.arrayOf(PropTypes.shape(Shelf.propTypes)),
+    shelvedBooks: PropTypes.objectOf(PropTypes.shape(Book.propTypes)),
     onBookMoved: PropTypes.func,
   };
 
@@ -23,6 +24,7 @@ class SearchView extends Component {
       { tag: 'Read', value: 'read' },
       { tag: 'None', value: 'none' },
     ],
+    shelvedBooks: {},
     onBookMoved: () => {},
   };
 
@@ -42,6 +44,7 @@ class SearchView extends Component {
       BooksApi.search(this.state.query)
         .then(response => (Array.isArray(response) ? response : []))
         .then(books => fromListToHash({ items: books, getKey: b => b.id }))
+        .then(books => ({ ...books, ...this.props.shelvedBooks }))
         .then(books => this.setState(prev => ({ ...prev, books })));
     }
   }, 150);
