@@ -15,22 +15,12 @@ BookCover.propTypes = {
   thumbnail: PropTypes.string.isRequired,
 };
 
-const BookCoverNotAvailable = () => {
-  const bookCoverNotAvailableStyle = {
-    color: '#666',
-    textAlign: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: '1rem',
-  };
-
-  return (
-    <div className="book-cover" style={bookCoverNotAvailableStyle}>
-      Cover not available
-    </div>
-  );
-};
+const BookCoverNotAvailable = () => (
+  <div
+    className="book-cover"
+    style={{ backgroundImage: "url('http://via.placeholder.com/128x193?text=No%20Cover')" }}
+  />
+);
 
 const Book = ({
   id, title, authors, imageLinks, renderShelfChanger,
