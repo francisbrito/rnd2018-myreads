@@ -1,7 +1,5 @@
 import React from 'react';
-import { intersperse, map } from 'ramda';
 import PropTypes from 'prop-types';
-import cuid from 'cuid';
 
 const BookCover = ({ thumbnail }) => {
   const bookCoverStyle = {
@@ -35,10 +33,7 @@ const Book = ({
         {renderShelfChanger()}
       </div>
       <p className="book-title">{title}</p>
-      <p className="book-authors">
-        {/* NOTE: sets unique keys to `br` elements */}
-        {map(e => (e.call ? e(cuid()) : e), intersperse(key => <br key={key} />, authors))}
-      </p>
+      <p className="book-authors">{authors.join(', ')}</p>
     </div>
   );
 };
