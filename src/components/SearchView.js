@@ -34,9 +34,11 @@ class SearchView extends Component {
 
   // NOTE: debouncing to avoid sending too many requests to search API.
   searchBooks = debounce(() => {
-    BooksApi.search(this.state.query)
-      .then(response => (Array.isArray(response) ? response : []))
-      .then(books => this.setState(prev => ({ ...prev, books })));
+    if (this.state.query && this.state.query.length > 0) {
+      BooksApi.search(this.state.query)
+        .then(response => (Array.isArray(response) ? response : []))
+        .then(books => this.setState(prev => ({ ...prev, books })));
+    }
   }, 150);
 
   render() {
